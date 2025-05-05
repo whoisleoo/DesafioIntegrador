@@ -18,6 +18,8 @@ Produto produtos;
 void registrarProduto();
 void listaProduto();
 void realizarVenda();
+void clearScreen();
+
 
 int main(){
     do{
@@ -57,7 +59,7 @@ int main(){
 }
 
 void registrarProduto(){
-    system("clear");
+    clearScreen();
     string nome;
     float preco;
     cout << "Digite o nome do produto (Não utilizar espaço) : ";
@@ -72,12 +74,12 @@ void registrarProduto(){
     cout << "Produto registrado com sucesso, digite qualquer tecla para continuar... ";
     cin.ignore();
     cin.get();
-    system("clear");
+    clearScreen();
 }
 
 
 void listaProduto(){
-    system("clear");
+    clearScreen();
     cout << "[LISTA DE PRODUTOS]\n\n";
     for(int i = 0; i < produtos.product.size(); i++){
             cout << " | NUMERAÇÃO: " << i << "\n";
@@ -87,27 +89,27 @@ void listaProduto(){
     cout << "Pressione qualquer tecla para continuar... ";
     cin.ignore();
     cin.get();
-    system("clear");
+    clearScreen();
 }
 
 
 void realizarVenda(){
     do{
-    system("clear");
+    clearScreen();
     int num;
     float valorPago;
     cout << "[REALIZAR VENDA DE PRODUTO]\n";
     cout << "Digite a numeração do produto a ser comprado (Caso não saiba, verifica a lista de produtos) : ";
     cin >> num;
 
-    system("clear");
+    clearScreen();
 
     if(num >= 0 && num < produtos.product.size()){
     cout << "[SUCESSO]\n\n";
     cout << "| PRODUTO ENCONTRADO: " << produtos.product[num] << " | PREÇO: R$" << produtos.price[num] << " REAIS | \n\n";
     cout << "Digite o valor pago pelo cliente: R$";
     cin >> valorPago;
-    system("clear");
+    clearScreen();
         if(valorPago == produtos.price[num]){
             cout << "Produto pago com sucesso!\n\n";
             cout << "Valor do produto: R$" << produtos.price[num] << " Reais \n";
@@ -139,4 +141,9 @@ void realizarVenda(){
     cin.ignore();
     cin.get();
  } while(closeSale);
+}
+
+void clearScreen() {
+    string escape = "\033[2J\033[1;1H";
+    cout << escape;
 }
