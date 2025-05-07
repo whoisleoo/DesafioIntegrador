@@ -252,7 +252,7 @@ void realizarVenda(){
     clearScreen();
     loading();
 
-        if(valorPago > valorTotal){
+        if(valorPago >= valorTotal){
             float troco = valorPago - valorTotal;
             cout << "\033[1;32m✅ Pagamento realizado com sucesso!\033[0m\n\n";
             cout << "💰 Valor do produto: R$" << valorTotal << "\n";
