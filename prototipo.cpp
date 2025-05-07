@@ -33,11 +33,20 @@ void visualizarCarrinho();
 void finalizarCompra();
 void clearScreen();
 void to_json(json& j, const Produto& p);
+void from_json(const json& j, Produto& p);
+void carregarProdutos();
+void editarProduto();
+void removerProduto();
+int lerInteiro();
+float lerFloat();
+void salvarProdutos();
+void pausar();
 
 
 int main(){
+    carregarProdutos();
     do{
-    cout << "Bem vindo ao sistema de super-mercado VERSÃO BETA 2.0\n\n";
+    cout << "Bem vindo ao sistema de super-mercado VERSÃO 3.0\n\n";
     cout << "[SELECIONE UMA OPÇÃO]\n";
     cout << "[1] Registrar produto.\n";
     cout << "[2] Lista de produtos.\n";
@@ -46,7 +55,7 @@ int main(){
     cout << "[5] Visualizar Carrinho.\n";
     cout << "[6] Finalizar Compras. \n";
     cout << "[7] Sair.\n";
-    cin >> mainOption;
+    mainOption = lerInteiro();
 
     switch (mainOption)
     {
@@ -87,21 +96,30 @@ int main(){
 
 void registrarProduto(){
     clearScreen();
+
+
     string nome;
     float preco;
-    cout << "Digite o nome do produto (Não utilizar espaço) : ";
+    cout << "Digite o nome do produto: ";
+    cin.ignore();
+    getline(cin, nome);
 
-    cin >> nome;
+    for(const auto& p : produtos){
+        if(p.product == nome){
+            cout << "Produto com esse nome já está registrado.\n\n";
+            pausar();
+            clearScreen();
+            return;
+        }
+    }
+
     cout << "Digite o preço do produto seguindo o exemplo (0.00) : ";
-    cin >> preco;
+    preco = lerFloat();
     
     Produto newProduct = {nome, preco};
     produtos.push_back(newProduct);
 
-    json j = produtos;
-    ofstream out("produtos.json");
-    out << j.dump(4);
-    out.close();
+    salvarProdutos();
 
     cout << "Produto registrado com sucesso, digite qualquer tecla para continuar... ";
     cin.ignore();
@@ -112,6 +130,7 @@ void registrarProduto(){
 
 void listaProduto(){
     clearScreen();
+    int opt;
     cout << "[LISTA DE PRODUTOS]\n\n";
     cout << "EM ESTOQUE: " << produtos.size() << "\n\n";
 
@@ -120,35 +139,51 @@ void listaProduto(){
             cout << " | PRODUTO: " << produtos[i].product << "\n";
             cout << " | PREÇO: " << produtos[i].price << "\n\n";
     }
-    cout << "Pressione qualquer tecla para continuar... ";
-    cin.ignore();
-    cin.get();
+
+    cout << "[1] Editar produto\n";
+    cout << "[2] Remover produto\n";
+    cout << "[3] Voltar\n";
+    opt = lerInteiro();
+
+    switch(opt){
+    case 1:
+        editarProduto();
+        break;
+    case 2:
+        removerProduto();
+        break;
+    case 3:
     clearScreen();
+        break;
+    default:
+        clearScreen();
+        break;
+    }
 }
 
 
 void realizarVenda(){
-    do{
     clearScreen();
     int num;
     int quantidadeProduto;
     float valorPago;
     cout << "[REALIZAR VENDA DE PRODUTO]\n";
     cout << "Digite a numeração do produto a ser comprado (Caso não saiba, verifica a lista de produtos) : ";
-    cin >> num;
-    cout << "Digite a quantidade do produto: ";
-    cin >> quantidadeProduto;
+    num = lerInteiro();
+
+    if(num >= 0 && num < produtos.size()){
+        cout << "Digite a quantidade do produto: ";
+        quantidadeProduto = lerInteiro();
     if(quantidadeProduto > 0){
 
     clearScreen();
     float valorTotal = produtos[num].price * quantidadeProduto;
 
-    if(num >= 0 && num < produtos.size()){
     cout << "[SUCESSO]\n\n";
     cout << "| PRODUTO ENCONTRADO: " << produtos[num].product << " | QUANTIDADE: " << quantidadeProduto << "\n";
     cout << "| PREÇO TOTAL: R$" << valorTotal << " REAIS | \n\n";
     cout << "Digite o valor pago pelo cliente: R$";
-    cin >> valorPago;
+    valorPago = lerFloat();
     clearScreen();
 
 
@@ -164,7 +199,6 @@ void realizarVenda(){
             cout << "Valor do produto: R$" << valorTotal << " Reais \n";
             cout << "Valor pago pelo cliente: R$" << valorPago << " Reais \n\n";
             cout << "Ainda precisa de: R$" << valorNecessario << " Reais para completar o pagamento\n";
-            closeSale = false;
 
         }else if(valorPago > valorTotal){
             float troco = valorPago - valorTotal;
@@ -172,25 +206,21 @@ void realizarVenda(){
             cout << "Valor do produto: R$" << valorTotal << " Reais \n";
             cout << "Valor pago pelo cliente: R$" << valorPago << " Reais \n\n";
             cout << "Troco do cliente: R$" << troco << " Reais \n";
-            closeSale = false;
         } else{
-            cout << "ERRO [404].\n";
+            cout << "[ERRO].\n";
             cout << "Algo deu errado, verifique se tudo foi digitado corretamente e tente novamente.\n\n";
         }
     } else{
-        cout << "[ERRO 404]\n\n";
-        cout << "NÃO FOI ENCONTRADO NENHUM PRODUTO VÁLIDO COM ESSA NUMERAÇÃO!\n";
-        cout << "(Verifique a lista de produtos pra uma consulta mais avançada)\n\n";
+        cout << "[ERRO]\n\n";
+        cout << "Quantidade de produto inválida.\n";
     }
 }else{
     cout << "[ERRO]\n\n";
-    cout << "Quantidade de produto inválida.\n";
+    cout << "NÃO FOI ENCONTRADO NENHUM PRODUTO VÁLIDO COM ESSA NUMERAÇÃO!\n";
+    cout << "(Verifique a lista de produtos pra uma consulta mais avançada)\n\n";
 }
-    cout << "Pressione qualquer tecla para continuar... ";
-    cin.ignore();
-    cin.get();
+    pausar();
     clearScreen();
- } while(closeSale);
 }
 
 
@@ -202,13 +232,13 @@ void carrinhoCompras() {
 
     clearScreen(); 
     cout << "Digite o número do produto a ser adicionado no carrinho: ";
-    cin >> numProduto;
+    numProduto = lerInteiro();
 
     if (numProduto >= 0 && numProduto < produtos.size()) {
         cout << "Produto selecionado: " << produtos[numProduto].product << "\n\n";
         
         cout << "Digite a quantidade a ser comprada: ";
-        cin >> quantidade;
+        quantidade = lerInteiro();
 
         bool numEncontrado = false;
         
@@ -230,14 +260,13 @@ void carrinhoCompras() {
         }
 
     } else {
-        cout << "[ERRO 404]\n\n";
+        cout << "[ERRO]\n\n";
         cout << "NÃO FOI ENCONTRADO NENHUM PRODUTO VÁLIDO COM ESSA NUMERAÇÃO!\n";
         cout << "(Verifique a lista de produtos para uma consulta mais avançada)\n\n";
     }
 
-    cout << "Pressione qualquer tecla para continuar... ";
-    cin.ignore();
-    cin.get();
+   
+    pausar();
     clearScreen();
 }
 
@@ -260,9 +289,8 @@ for(auto& item : carrinho){
 }
 
 cout << "\n Total do carrinho: R$" << totalCarrinho << "\n\n";
-cout << "Pressione qualquer tecla para continuar... ";
-cin.ignore();
-cin.get();
+
+pausar();
 clearScreen();
 }
 
@@ -283,7 +311,7 @@ cout << "Valor total da compra: R$" << totalCarrinho << "\n\n";
 
 float valorPago;
 cout << "Valor pago pelo cliente: R$";
-cin >> valorPago;
+valorPago = lerFloat();
 
 if(valorPago < totalCarrinho){
     float valorFaltante;
@@ -296,9 +324,7 @@ if(valorPago < totalCarrinho){
     cout << "Troco do cliente: R$" << troco << "\n";
 
     carrinho.clear();
-    cout << "Pressione qualquer tecla para continuar... ";
-    cin.ignore();
-    cin.get();
+    pausar();
     clearScreen();
 }
 
@@ -310,13 +336,135 @@ cout << "Seu carrinho está vazio, pressione qualquer tecla pra  continuar... ";
     }
 }
 
+
+void editarProduto(){
+clearScreen();
+int indice;
+cout << "[EDITAR PRODUTO]\n\n";
+cout << "Digite a numeração do produto que deseja editar: ";
+indice = lerInteiro();
+
+if(indice >= 0 && indice < produtos.size()){
+    string nomeNovo;
+    float precoNovo;
+    cout << "\nProduto encontrado: " << produtos[indice].product << "\n";
+    cout << "Digite o novo produto: ";
+    cin.ignore();
+    getline(cin, nomeNovo);
+    cout << "Digite o novo preço: ";
+    precoNovo = lerFloat();
+
+    produtos[indice].product = nomeNovo;
+    produtos[indice].price = precoNovo;
+
+   salvarProdutos();
+
+    cout << "Produto atualizado com sucesso!\n";
+} else{
+    cout << "[ERRO]\n\n";
+    cout << "NÃO FOI ENCONTRADO NENHUM PRODUTO VÁLIDO COM ESSA NUMERAÇÃO!\n";
+}
+    pausar();
+    clearScreen();
+}
+
+
+
+
+void removerProduto(){
+    clearScreen();
+    cout << "[REMOVER PRODUTO]\n\n";
+    int indice;
+    cout << "Digite a numeração do produto que deseja remover: ";
+    indice = lerInteiro();
+    
+    if(indice >= 0 && indice < produtos.size()){
+        char confirm;
+        cout << "Tem certeza que deseja remover: " << produtos[indice].product << "? [S/N] ";
+        cin >> confirm;
+
+        if(confirm == 's' || confirm == 'S'){
+        cout << "Produto: " << produtos[indice].product << " Foi removido com sucesso!\n\n";
+
+        produtos.erase(produtos.begin() + indice);
+
+
+    
+        json j = produtos;
+        ofstream out("produtos.json");
+        out << j.dump(4);
+        out.close();
+        }else{
+            cout << "Remoção cancelada com sucesso.\n\n";
+        }
+
+    }
+    pausar(); 
+    clearScreen();
+}
+
+
+
 void to_json(json& j, const Produto& p){
     j = json{{"nome", p.product}, {"preco", p.price}};
 }
 
+void from_json(const json& j, Produto& p){
+    j.at("nome").get_to(p.product);
+    j.at("preco").get_to(p.price);
+}
+
+
+void carregarProdutos(){
+    ifstream in("produtos.json");
+    if(in){
+        json j;
+        in >> j;
+        in.close();
+        produtos = j.get<vector<Produto>>();
+    }
+}
 
 
 void clearScreen() {
     string escape = "\033[2J\033[1;1H";
     cout << escape;
+}
+
+
+
+int lerInteiro(){
+int valor;
+while(!(cin >> valor)){
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Entrada inválida, porfavor digite um número inteiro: ";
+    }
+    return valor;
+}
+
+
+
+float lerFloat(){
+float valor;
+while(!(cin >> valor)){
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Entrada inválida, porfavor digite um número decimal (ex: 0.00): ";
+    }
+    return valor;
+}
+
+void salvarProdutos() {
+    json j = produtos;
+    ofstream out("produtos.json");
+    out << j.dump(4);
+    out.close();
+}
+
+
+void pausar(){
+    cout << "Pressione qualquer tecla pra continuar...";
+    cin.ignore();
+    cin.get();
 }
