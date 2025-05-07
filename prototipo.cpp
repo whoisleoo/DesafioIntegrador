@@ -21,9 +21,19 @@ struct ItemCarrinho
     int quantProduto;
 };
 
+struct Extrato
+{
+    string produto;
+    int quantidade;
+    float valorPago;
+
+};
+
 
 vector<Produto> produtos;
 vector<ItemCarrinho> carrinho;
+vector<Extrato> vendas;
+
 
 void registrarProduto();
 void listaProduto();
@@ -34,17 +44,23 @@ void finalizarCompra();
 void clearScreen();
 void to_json(json& j, const Produto& p);
 void from_json(const json& j, Produto& p);
+void to_json(json& j, const Extrato& e);
+void from_json(const json& j, Extrato& e);
 void carregarProdutos();
+void salvarProdutos();
+void carregarExtrato();
+void salvarExtrato();
 void editarProduto();
 void removerProduto();
+void verificarExtrato();
 int lerInteiro();
 float lerFloat();
-void salvarProdutos();
 void pausar();
 
 
 int main(){
     carregarProdutos();
+    carregarExtrato();
     do{
     cout << "Bem vindo ao sistema de super-mercado VERSÃO 3.0\n\n";
     cout << "[SELECIONE UMA OPÇÃO]\n";
@@ -54,7 +70,8 @@ int main(){
     cout << "[4] Carrinho de Compras.\n";
     cout << "[5] Visualizar Carrinho.\n";
     cout << "[6] Finalizar Compras. \n";
-    cout << "[7] Sair.\n";
+    cout << "[7] Extrato de Compras.\n";
+    cout << "[8] Sair.\n";
     mainOption = lerInteiro();
 
     switch (mainOption)
@@ -78,6 +95,9 @@ int main(){
         finalizarCompra();
         break;
     case 7:
+        verificarExtrato();
+        break;
+    case 8:
         close = false;
         break;
     default:
@@ -121,9 +141,7 @@ void registrarProduto(){
 
     salvarProdutos();
 
-    cout << "Produto registrado com sucesso, digite qualquer tecla para continuar... ";
-    cin.ignore();
-    cin.get();
+    pausar();
     clearScreen();
 }
 
@@ -187,29 +205,27 @@ void realizarVenda(){
     clearScreen();
 
 
-        if(valorPago == valorTotal){
+        if(valorPago > valorTotal){
+            float troco = valorPago - valorTotal;
             cout << "Produto pago com sucesso!\n\n";
             cout << "Valor do produto: R$" << valorTotal << " Reais \n";
             cout << "Valor pago pelo cliente: R$" << valorPago << " Reais \n";
-            cout << "TOTAL: R$" << valorPago << " Reais \n";
-            closeSale = false;
-        }else if(valorPago < valorTotal){
+            cout << "Troco do cliente: R$" << troco << "\n";
+
+                Extrato novaVenda;
+                novaVenda.produto = produtos[num].product;
+                novaVenda.quantidade = quantidadeProduto;
+                novaVenda.valorPago = produtos[num].price * quantidadeProduto;
+                vendas.push_back(novaVenda);
+        
+            salvarExtrato();
+        }else{
             float valorNecessario = valorTotal - valorPago;
             cout << "Não foi possivel realizar o pagamento!\n\n";
             cout << "Valor do produto: R$" << valorTotal << " Reais \n";
             cout << "Valor pago pelo cliente: R$" << valorPago << " Reais \n\n";
             cout << "Ainda precisa de: R$" << valorNecessario << " Reais para completar o pagamento\n";
-
-        }else if(valorPago > valorTotal){
-            float troco = valorPago - valorTotal;
-            cout << "Produto pago com sucesso!\n\n";
-            cout << "Valor do produto: R$" << valorTotal << " Reais \n";
-            cout << "Valor pago pelo cliente: R$" << valorPago << " Reais \n\n";
-            cout << "Troco do cliente: R$" << troco << " Reais \n";
-        } else{
-            cout << "[ERRO].\n";
-            cout << "Algo deu errado, verifique se tudo foi digitado corretamente e tente novamente.\n\n";
-        }
+        } 
     } else{
         cout << "[ERRO]\n\n";
         cout << "Quantidade de produto inválida.\n";
@@ -314,24 +330,31 @@ cout << "Valor pago pelo cliente: R$";
 valorPago = lerFloat();
 
 if(valorPago < totalCarrinho){
-    float valorFaltante;
     cout << "Valor insuficiente para concluir a compra.\n\n";
-    valorFaltante = totalCarrinho - valorPago;
-    cout << "Ainda falta: " << valorFaltante << "\n";
+    float valorFaltante = totalCarrinho - valorPago;
+    cout << "Ainda falta: " << valorFaltante << " para concluir a compra.\n";
 } else{
     float troco = valorPago - totalCarrinho;
     cout << "Compra concluida com sucesso!\n\n";
     cout << "Troco do cliente: R$" << troco << "\n";
 
+    for(auto& item : carrinho){
+        Extrato novaVenda;
+        novaVenda.produto = produtos[item.indiceProduto].product;
+        novaVenda.quantidade = item.quantProduto;
+        novaVenda.valorPago = produtos[item.indiceProduto].price * item.quantProduto;
+        vendas.push_back(novaVenda);
+    }
+
+
+    salvarExtrato();
     carrinho.clear();
     pausar();
     clearScreen();
 }
 
 } else{
-cout << "Seu carrinho está vazio, pressione qualquer tecla pra  continuar... ";
-    cin.ignore();
-    cin.get();  
+    pausar();
     clearScreen();
     }
 }
@@ -390,10 +413,7 @@ void removerProduto(){
 
 
     
-        json j = produtos;
-        ofstream out("produtos.json");
-        out << j.dump(4);
-        out.close();
+        salvarProdutos();
         }else{
             cout << "Remoção cancelada com sucesso.\n\n";
         }
@@ -403,6 +423,25 @@ void removerProduto(){
     clearScreen();
 }
 
+
+void verificarExtrato(){
+    clearScreen();
+    if(vendas.size() > 0){
+    cout << "[EXTRATO DE COMPRAS]\n\n";
+    cout << "Total de vendas: " << vendas.size() << "\n\n";
+
+    for(int i = 0; i < vendas.size(); i++){
+            cout << " | PRODUTO: " << vendas[i].produto << "\n";
+            cout << " | QUANTIDADE: " << vendas[i].quantidade << "\n"; 
+            cout << " | VALOR PAGO: " << vendas[i].valorPago << "\n\n";
+    } 
+    } else{
+        cout << "[Não existe nenhum extrato registrado]\n";
+        cout << "Realize uma venda para consultar o extrato.\n\n";
+    }
+    pausar();
+    clearScreen();
+}
 
 
 void to_json(json& j, const Produto& p){
@@ -414,6 +453,15 @@ void from_json(const json& j, Produto& p){
     j.at("preco").get_to(p.price);
 }
 
+void to_json(json& j, const Extrato& e) {
+    j = json{{"produto", e.produto}, {"quantidade", e.quantidade}, {"valorPago", e.valorPago}};
+}
+
+void from_json(const json& j, Extrato& e) {
+    j.at("produto").get_to(e.produto);
+    j.at("quantidade").get_to(e.quantidade);
+    j.at("valorPago").get_to(e.valorPago);
+}
 
 void carregarProdutos(){
     ifstream in("produtos.json");
@@ -424,6 +472,25 @@ void carregarProdutos(){
         produtos = j.get<vector<Produto>>();
     }
 }
+
+void carregarExtrato() {
+    ifstream in("vendas.json");
+    if (in) {
+        json j;
+        in >> j;
+        in.close();
+        vendas = j.get<vector<Extrato>>();
+    }
+}
+
+
+void salvarExtrato() {
+    json j = vendas;
+    ofstream out("vendas.json");
+    out << j.dump(4);
+    out.close();
+}
+
 
 
 void clearScreen() {
@@ -465,6 +532,5 @@ void salvarProdutos() {
 
 void pausar(){
     cout << "Pressione qualquer tecla pra continuar...";
-    cin.ignore();
     cin.get();
 }
