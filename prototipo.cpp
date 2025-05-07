@@ -1,6 +1,9 @@
 #include <iostream>
+#include "json.hpp"
+#include <fstream>
 #include <vector>
 using namespace std;
+using json = nlohmann::json;
 
 bool close = true;
 bool closeSale = true;
@@ -8,8 +11,8 @@ int mainOption;
 
 struct Produto
 {
-    vector<float> price;
-    vector<string> product;
+   string product;
+   float price;
 };
 
 struct ItemCarrinho
@@ -19,7 +22,7 @@ struct ItemCarrinho
 };
 
 
-Produto produtos;
+vector<Produto> produtos;
 vector<ItemCarrinho> carrinho;
 
 void registrarProduto();
@@ -29,6 +32,7 @@ void carrinhoCompras();
 void visualizarCarrinho();
 void finalizarCompra();
 void clearScreen();
+void to_json(json& j, const Produto& p);
 
 
 int main(){
@@ -91,8 +95,13 @@ void registrarProduto(){
     cout << "Digite o preço do produto seguindo o exemplo (0.00) : ";
     cin >> preco;
     
-    produtos.product.push_back(nome);
-    produtos.price.push_back(preco);
+    Produto newProduct = {nome, preco};
+    produtos.push_back(newProduct);
+
+    json j = produtos;
+    ofstream out("produtos.json");
+    out << j.dump(4);
+    out.close();
 
     cout << "Produto registrado com sucesso, digite qualquer tecla para continuar... ";
     cin.ignore();
@@ -104,12 +113,12 @@ void registrarProduto(){
 void listaProduto(){
     clearScreen();
     cout << "[LISTA DE PRODUTOS]\n\n";
-    cout << "EM ESTOQUE: " << produtos.product.size() << "\n\n";
+    cout << "EM ESTOQUE: " << produtos.size() << "\n\n";
 
-    for(int i = 0; i < produtos.product.size(); i++){
+    for(int i = 0; i < produtos.size(); i++){
             cout << " | NUMERAÇÃO: " << i << "\n";
-            cout << " | PRODUTO: " << produtos.product[i] << "\n";
-            cout << " | PREÇO: " << produtos.price[i] << "\n\n";
+            cout << " | PRODUTO: " << produtos[i].product << "\n";
+            cout << " | PREÇO: " << produtos[i].price << "\n\n";
     }
     cout << "Pressione qualquer tecla para continuar... ";
     cin.ignore();
@@ -132,11 +141,11 @@ void realizarVenda(){
     if(quantidadeProduto > 0){
 
     clearScreen();
-    float valorTotal = produtos.price[num] * quantidadeProduto;
+    float valorTotal = produtos[num].price * quantidadeProduto;
 
-    if(num >= 0 && num < produtos.product.size()){
+    if(num >= 0 && num < produtos.size()){
     cout << "[SUCESSO]\n\n";
-    cout << "| PRODUTO ENCONTRADO: " << produtos.product[num] << " | QUANTIDADE: " << quantidadeProduto << "\n";
+    cout << "| PRODUTO ENCONTRADO: " << produtos[num].product << " | QUANTIDADE: " << quantidadeProduto << "\n";
     cout << "| PREÇO TOTAL: R$" << valorTotal << " REAIS | \n\n";
     cout << "Digite o valor pago pelo cliente: R$";
     cin >> valorPago;
@@ -195,8 +204,8 @@ void carrinhoCompras() {
     cout << "Digite o número do produto a ser adicionado no carrinho: ";
     cin >> numProduto;
 
-    if (numProduto >= 0 && numProduto < produtos.product.size()) {
-        cout << "Produto selecionado: " << produtos.product[numProduto] << "\n\n";
+    if (numProduto >= 0 && numProduto < produtos.size()) {
+        cout << "Produto selecionado: " << produtos[numProduto].product << "\n\n";
         
         cout << "Digite a quantidade a ser comprada: ";
         cin >> quantidade;
@@ -239,8 +248,8 @@ cout << "[Carrinho de Compras]\n\n";
 float totalCarrinho = 0.0;
 
 for(auto& item : carrinho){
-    float precoProduto = produtos.price[item.indiceProduto];
-    string nomeItem = produtos.product[item.indiceProduto];
+    float precoProduto = produtos[item.indiceProduto].price;
+    string nomeItem = produtos[item.indiceProduto].product;
     float totalItem = precoProduto * item.quantProduto;
 
     cout << "Produto: " << nomeItem << " | Quantidade: " << item.quantProduto << "\n";
@@ -264,7 +273,7 @@ clearScreen();
 float totalCarrinho = 0.0;
 
 for(auto& item : carrinho){
-    totalCarrinho += produtos.price[item.indiceProduto] * item.quantProduto;
+    totalCarrinho += produtos[item.indiceProduto].price * item.quantProduto;
 }
 
 if(totalCarrinho > 0){
@@ -299,6 +308,10 @@ cout << "Seu carrinho está vazio, pressione qualquer tecla pra  continuar... ";
     cin.get();  
     clearScreen();
     }
+}
+
+void to_json(json& j, const Produto& p){
+    j = json{{"nome", p.product}, {"preco", p.price}};
 }
 
 
