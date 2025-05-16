@@ -1,5 +1,7 @@
 #include "header.h"
 
+//Algumas funções podem não estar atualizadas, recomendo utilizar a versão do windows.
+
 bool close = true;
 bool closeSale = true;
 int mainOption;
