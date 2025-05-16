@@ -1,14 +1,4 @@
-#include <iostream>
-#include "json.hpp"
-#include <fstream>
-#include <iomanip> 
-#include <thread>  
-#include <chrono>
-#include <string>
-#include <vector>
-#include <windows.h>
-using namespace std;
-using json = nlohmann::json;
+#include "header.h"
 
 bool close = true;
 bool closeSale = true;
@@ -57,6 +47,7 @@ void carregarExtrato();
 void salvarExtrato();
 void editarProduto();
 void removerProduto();
+void esvaziarCarrinho();
 void verificarExtrato();
 void loading();
 int lerInteiro();
@@ -69,13 +60,13 @@ int main(){
     carregarProdutos();
     carregarExtrato();
     do{
-    cout << "\033[1;36m"; // Cor ciano forte
+    cout << "\033[1;36m"; 
     cout << "╔══════════════════════════════════════╗\n";
     cout << "║       🛒  SUPERMERCADO v3.0          ║\n";
     cout << "╚══════════════════════════════════════╝\n";
-    cout << "\033[0m"; // Reset cor
+    cout << "\033[0m";
     
-    cout << "\033[1;33m"; // Amarelo
+    cout << "\033[1;33m"; 
     cout << "[SELECIONE UMA OPÇÃO]\n\n";
     cout << "\033[0m";
     
@@ -372,7 +363,29 @@ for(auto& item : carrinho){
 
     totalCarrinho += totalItem;
 }   
-    cout << "\n🧮 \033[1;32mTOTAL DO CARRINHO: R$" << fixed << setprecision(2) << totalCarrinho << "\033[0m\n";
+    int opc;
+    cout << "\n🧮 \033[1;32mTOTAL DO CARRINHO: R$" << fixed << setprecision(2) << totalCarrinho << "\033[0m\n\n";
+    cout << "\033[1;36m[Opções de Gerenciamento]\033[0m\n";
+    cout << " [1] 🗑️  Esvaziar carrinho\n";
+    cout << " [2] 🔙 Voltar ao menu principal\n\n";
+    cout << "\033[1;32m👉 Digite a opção desejada: \033[0m";
+    opc = lerInteiro();
+
+    switch (opc)
+    {
+    case 1:
+        esvaziarCarrinho();
+        break;
+    case 2:
+        clearScreen();
+        break;   
+    default:
+        cout << "\n\033[1;31m[⚠️ Opção inválida. Retornando ao menu.]\033[0m\n";
+        pausar();
+        clearScreen();
+        break;
+    }
+    
 }
 cout << endl;
 pausar();
@@ -546,6 +559,24 @@ void verificarExtrato(){
     }
     pausar();
     clearScreen();
+}
+
+
+void esvaziarCarrinho(){
+    clearScreen();
+    char confirm;
+    cout << "\033[1;36m";
+        cout << "╔════════════════════════════════════════════╗\n";
+        cout << "║          🗑️  ESVAZIAR CARRINHO              ║\n";
+        cout << "╚════════════════════════════════════════════╝\n";
+        cout << "\033[0m\n\n";
+        cout << "❓ Tem certeza que deseja esvaziar seu? [S/N]: ";
+        cin >> confirm;
+        if(confirm == 's' || confirm == 'S'){
+            carrinho.clear();
+            loading();
+            cout << "\n\033[1;32m✅ Carrinho esvaziado com sucesso!\033[0m\n";
+        }
 }
 
 
