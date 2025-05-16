@@ -2,8 +2,11 @@
 **Prototipo**
 * [✅] Registrar produto.
 * [✅] Lista de produtos.
+* [✅] Editar produtos.
+* [✅] Remover produtos.
 * [✅] Realizar venda.
 * [✅] Carrinho de Compras.
+* [✅] Esvaziar carrinho.
 * [✅] Visualizar Carrinho.
 * [✅] Finalizar Compras.
 * [✅] Json pra salvar produtos registrados (Oferecer um manuseio pra deletar e adicionar novos produtos).
