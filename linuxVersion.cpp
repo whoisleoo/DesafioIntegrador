@@ -1,13 +1,4 @@
-#include <iostream>
-#include "json.hpp"
-#include <fstream>
-#include <iomanip> 
-#include <thread>  
-#include <chrono>
-#include <string>
-#include <vector>
-using namespace std;
-using json = nlohmann::json;
+#include "header.h"
 
 bool close = true;
 bool closeSale = true;
