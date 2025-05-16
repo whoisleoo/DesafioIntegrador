@@ -1,5 +1,5 @@
 # DESAFIO INTEGRADOR:
-**Prototipo**
+**Sistema de caixa de super-mercado**
 * [✅] Registrar produto.
 * [✅] Lista de produtos.
 * [✅] Editar produtos.
