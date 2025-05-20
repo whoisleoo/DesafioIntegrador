@@ -14,9 +14,10 @@
 * [✅] Otimizar o uso de memoria.
 * [✅] Saldo do caixa. (aumentando a cada compra).
 * [✅] Embelezar o programa.
+* [✅] Data da venda no extrato.
 
 **Coisas pra adicionar:**
 * [] Opção para colocar desconto em produtos.
 
 
-* last updated 07/05/25 18:30
+* last updated 20/05/25 19:24
