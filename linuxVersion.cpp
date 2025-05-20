@@ -76,7 +76,7 @@ int main(){
     cout << "║       🛒  SUPERMERCADO v3.0          ║\n";
     cout << "╚══════════════════════════════════════╝\n";
     cout << "\033[0m"; // Reset cor
-    getTime();
+
     cout << "\033[1;33m"; // Amarelo
     cout << "[SELECIONE UMA OPÇÃO]\n\n";
     cout << "\033[0m";
