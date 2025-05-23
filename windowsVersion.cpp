@@ -1,3 +1,6 @@
+// Criar um fundo da caixa (ex: 2000) 
+
+
 #include "header.h"
 
 bool close = true;
@@ -21,6 +24,7 @@ struct Extrato
     string produto;
     int quantidade;
     float valorPago;
+    string data;
 
 };
 
@@ -47,8 +51,9 @@ void carregarExtrato();
 void salvarExtrato();
 void editarProduto();
 void removerProduto();
-void esvaziarCarrinho();
 void verificarExtrato();
+void esvaziarCarrinho();
+string getTime();
 void loading();
 int lerInteiro();
 float lerFloat();
@@ -56,17 +61,19 @@ void pausar();
 
 
 int main(){
+
     SetConsoleOutputCP(65001);
+
     carregarProdutos();
     carregarExtrato();
     do{
-    cout << "\033[1;36m"; 
+    cout << "\033[1;36m"; // Cor ciano forte
     cout << "╔══════════════════════════════════════╗\n";
     cout << "║       🛒  SUPERMERCADO v3.0          ║\n";
     cout << "╚══════════════════════════════════════╝\n";
-    cout << "\033[0m";
-    
-    cout << "\033[1;33m"; 
+    cout << "\033[0m"; // Reset cor
+
+    cout << "\033[1;33m"; // Amarelo
     cout << "[SELECIONE UMA OPÇÃO]\n\n";
     cout << "\033[0m";
     
@@ -256,6 +263,7 @@ void realizarVenda(){
                 novaVenda.produto = produtos[num].product;
                 novaVenda.quantidade = quantidadeProduto;
                 novaVenda.valorPago = produtos[num].price * quantidadeProduto;
+                novaVenda.data = getTime();
                 vendas.push_back(novaVenda);
         
             salvarExtrato();
@@ -364,7 +372,7 @@ for(auto& item : carrinho){
     totalCarrinho += totalItem;
 }   
     int opc;
-    cout << "\n🧮 \033[1;32mTOTAL DO CARRINHO: R$" << fixed << setprecision(2) << totalCarrinho << "\033[0m\n\n";
+    cout << "\n🧮 \033[1;32mTOTAL DO CARRINHO: R$" << fixed << setprecision(2) << totalCarrinho << "\033[0m\n";
     cout << "\033[1;36m[Opções de Gerenciamento]\033[0m\n";
     cout << " [1] 🗑️  Esvaziar carrinho\n";
     cout << " [2] 🔙 Voltar ao menu principal\n\n";
@@ -430,6 +438,7 @@ if(valorPago < totalCarrinho){
         novaVenda.produto = produtos[item.indiceProduto].product;
         novaVenda.quantidade = item.quantProduto;
         novaVenda.valorPago = produtos[item.indiceProduto].price * item.quantProduto;
+        novaVenda.data = getTime();
         vendas.push_back(novaVenda);
     }
 
@@ -530,7 +539,7 @@ void removerProduto(){
 
 void verificarExtrato(){
     clearScreen();
-    float totalArrecadado = 0.0;
+    float totalArrecadado = 100.00;
     if(vendas.size() > 0){
         cout << "\033[1;36m";
         cout << "╔════════════════════════════════════════════╗\n";
@@ -544,12 +553,13 @@ void verificarExtrato(){
     for(int i = 0; i < vendas.size(); i++){
         cout << "📦 Produto: \033[1;37m" << vendas[i].produto << "\033[0m\n";
         cout << "🔢 Quantidade: \033[1;32m" << vendas[i].quantidade << "\033[0m\n";
-        cout << "💰 Valor pago: R$" << vendas[i].valorPago << "\n\n";
+        cout << "💰 Valor pago: \033[1;32mR$" << vendas[i].valorPago << "\033[0m\n";
+        cout << "📅​ Data da venda: \033[1;37m" << vendas[i].data << "\033[0m\n";
 
         totalArrecadado += vendas[i].valorPago;
     } 
     cout << "══════════════════════════════════════════════\n";
-    cout << "💵 \033[1;32mTOTAL ARRECADADO: R$" << fixed << setprecision(2) << totalArrecadado << "\033[0m\n";
+    cout << "💵 \033[1;32mTOTAL NO CAIXA: R$" << fixed << setprecision(2) << totalArrecadado << "\033[0m\n";
 
     } else{
         cout << "\033[1;31m";
@@ -580,6 +590,8 @@ void esvaziarCarrinho(){
 }
 
 
+
+
 void to_json(json& j, const Produto& p){
     j = json{{"nome", p.product}, {"preco", p.price}};
 }
@@ -590,13 +602,14 @@ void from_json(const json& j, Produto& p){
 }
 
 void to_json(json& j, const Extrato& e) {
-    j = json{{"produto", e.produto}, {"quantidade", e.quantidade}, {"valorPago", e.valorPago}};
+    j = json{{"produto", e.produto}, {"quantidade", e.quantidade}, {"valorPago", e.valorPago}, {"data", e.data}};
 }
 
 void from_json(const json& j, Extrato& e) {
     j.at("produto").get_to(e.produto);
     j.at("quantidade").get_to(e.quantidade);
     j.at("valorPago").get_to(e.valorPago);
+    j.at("data").get_to(e.data);
 }
 
 void carregarProdutos(){
@@ -632,6 +645,17 @@ void salvarExtrato() {
 void clearScreen() {
     string escape = "\033[2J\033[1;1H";
     cout << escape;
+}
+
+string getTime(){
+    time_t rawtime;
+    struct tm * timeinfo;
+
+  time (&rawtime);
+  timeinfo = localtime (&rawtime);
+  string tempo = asctime(timeinfo);
+  return tempo;
+ 
 }
 
 
@@ -677,7 +701,7 @@ void loading() {
     for (int i = 0; i < 20; ++i) {
         cout << spinner[i % 4] << '\b';
         cout.flush();
-        this_thread::sleep_for(chrono::milliseconds(150));
+        Sleep(150);
     }
     cout << "| Carregamento concluído!\n";
 }
