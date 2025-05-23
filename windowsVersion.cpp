@@ -1,4 +1,5 @@
-// Criar um fundo da caixa (ex: 2000) 
+// Criar um fundo da caixa (ex: 2000)
+// mostrar total de troco na saida
 
 
 #include "header.h"
@@ -10,7 +11,7 @@ int mainOption;
 struct Produto
 {
    string product;
-   float price;
+   long double price;
 };
 
 struct ItemCarrinho
@@ -23,7 +24,7 @@ struct Extrato
 {
     string produto;
     int quantidade;
-    float valorPago;
+    long double valorPago;
     string data;
 
 };
@@ -53,10 +54,11 @@ void editarProduto();
 void removerProduto();
 void verificarExtrato();
 void esvaziarCarrinho();
+void saidaCaixa();
 string getTime();
 void loading();
 int lerInteiro();
-float lerFloat();
+long double lerFloat();
 void pausar();
 
 
@@ -117,6 +119,7 @@ int main(){
         verificarExtrato();
         break;
     case 8:
+        saidaCaixa();
         close = false;
         break;
     default:
@@ -129,7 +132,8 @@ int main(){
 
 
     } while(close);
-    cout << "Até mais!\n";
+
+
     return 0;
 }
 
@@ -138,7 +142,7 @@ void registrarProduto(){
 
 
     string nome;
-    float preco;
+    long double preco;
     cout << "\033[1;36m";
     cout << "╔═══════════════════════════════════════════╗\n";
     cout << "║          📝 REGISTRAR NOVO PRODUTO        ║\n";
@@ -222,7 +226,7 @@ void realizarVenda(){
     clearScreen();
     int num;
     int quantidadeProduto;
-    float valorPago;
+    long double valorPago;
     cout << "\033[1;36m";
     cout << "╔═══════════════════════════════════════════╗\n";
     cout << "║            💰 REALIZAR VENDA              ║\n";
@@ -240,7 +244,7 @@ void realizarVenda(){
     if(quantidadeProduto > 0){
 
     clearScreen();
-    float valorTotal = produtos[num].price * quantidadeProduto;
+    long double valorTotal = produtos[num].price * quantidadeProduto;
 
     cout << "\033[1;34m🔍 RESUMO DA VENDA:\033[0m\n";
     cout << "🛍️ Produto: " << produtos[num].product << "\n";
@@ -253,7 +257,7 @@ void realizarVenda(){
     loading();
 
         if(valorPago >= valorTotal){
-            float troco = valorPago - valorTotal;
+            long double troco = valorPago - valorTotal;
             cout << "\033[1;32m✅ Pagamento realizado com sucesso!\033[0m\n\n";
             cout << "💰 Valor do produto: R$" << valorTotal << "\n";
             cout << "💵 Valor pago: R$" << valorPago << "\n";
@@ -268,7 +272,7 @@ void realizarVenda(){
         
             salvarExtrato();
         }else{
-            float valorNecessario = valorTotal - valorPago;
+            long double valorNecessario = valorTotal - valorPago;
             cout << "\033[1;31m❌ Pagamento insuficiente!\033[0m\n\n";
             cout << "💰 Valor necessário: R$" << valorTotal << "\n";
             cout << "💵 Valor pago: R$" << valorPago << "\n";
@@ -353,15 +357,15 @@ cout << "║          🧾  CARRINHO DE COMPRAS        ║\n";
 cout << "╚═════════════════════════════════════════╝\n";
 cout << "\033[0m\n";
 
-float totalCarrinho = 0.0;
+long double totalCarrinho = 0.0;
 
 if(carrinho.empty()){
     cout << "\033[1;33m⚠️  Seu carrinho está vazio!\033[0m\n";
 } else{
 for(auto& item : carrinho){
-    float precoProduto = produtos[item.indiceProduto].price;
+    long double precoProduto = produtos[item.indiceProduto].price;
     string nomeItem = produtos[item.indiceProduto].product;
-    float totalItem = precoProduto * item.quantProduto;
+    long double totalItem = precoProduto * item.quantProduto;
 
     cout << "🛒 Produto: \033[1;37m" << nomeItem << "\033[0m\n";
     cout << "🔢 Quantidade: \033[1;36m" << item.quantProduto << "\033[0m\n";
@@ -404,7 +408,7 @@ clearScreen();
 
 void finalizarCompra(){
 clearScreen();
-float totalCarrinho = 0.0;
+long double totalCarrinho = 0.0;
 
 for(auto& item : carrinho){
     totalCarrinho += produtos[item.indiceProduto].price * item.quantProduto;
@@ -419,16 +423,16 @@ cout << "\033[0m\n";
 
 if(totalCarrinho > 0){
 cout << "🧮 Total da compra: \033[1;32mR$" << fixed << setprecision(2) << totalCarrinho << "\033[0m\n";
-float valorPago;
+long double valorPago;
 cout << "💵 Valor pago pelo cliente: R$";
 valorPago = lerFloat();
 loading();
 if(valorPago < totalCarrinho){
     cout << "\n\033[1;31m❌ Valor insuficiente!\033[0m\n";
-    float valorFaltante = totalCarrinho - valorPago;
+    long double valorFaltante = totalCarrinho - valorPago;
     cout << "🔻 Ainda falta: \033[1;33mR$" << valorFaltante << "\033[0m para completar a compra.\n";
 } else{
-    float troco = valorPago - totalCarrinho;
+    long double troco = valorPago - totalCarrinho;
     cout << "\n\033[1;32m✅ Compra realizada com sucesso!\033[0m\n";
     cout << "💵 Troco para o cliente: \033[1;36mR$" << fixed << setprecision(2) << troco << "\033[0m\n\n";
 
@@ -469,7 +473,7 @@ cout << "🔢 Digite a numeração do produto que deseja editar: ";
 indice = lerInteiro();
 if(indice >= 0 && indice < produtos.size()){
     string nomeNovo;
-    float precoNovo;
+    long double precoNovo;
     cout << "\n🧾 Produto atual: \033[1;37m" << produtos[indice].product << "\033[0m\n";
     cout << "✏️  Digite o novo nome: ";
     cin.ignore();
@@ -539,7 +543,7 @@ void removerProduto(){
 
 void verificarExtrato(){
     clearScreen();
-    float totalArrecadado = 100.00;
+    long double totalArrecadado = 0.0;
     if(vendas.size() > 0){
         cout << "\033[1;36m";
         cout << "╔════════════════════════════════════════════╗\n";
@@ -587,6 +591,30 @@ void esvaziarCarrinho(){
             loading();
             cout << "\n\033[1;32m✅ Carrinho esvaziado com sucesso!\033[0m\n";
         }
+}
+
+
+
+
+void saidaCaixa(){
+    clearScreen();
+    long double totalArrecadado = 0.0;
+    for(int i = 0; i < vendas.size(); i++){
+        totalArrecadado += vendas[i].valorPago;
+    }
+
+      cout << "\033[1;36m";
+        cout << "╔════════════════════════════════════════════╗\n";
+        cout << "║               👍 ATÉ MAIS!                 ║\n";
+        cout << "╚════════════════════════════════════════════╝\n";
+        cout << "\033[0m\n\n";
+
+
+    cout << "🔢 TOTAL PRODUTOS VENDIDOS: \033[1;32m" << vendas.size() << "\033[0m\n";
+    cout << "💰 TOTAL ARRECADADO: \033[1;32mR$" << totalArrecadado << "\033[0m\n";
+    cout << "📦 SAIDA DO CAIXA: NÃO FOI ADICIONADO AINDA \n";
+
+    pausar();
 }
 
 
@@ -672,8 +700,8 @@ while(!(cin >> valor)){
 
 
 
-float lerFloat(){
-float valor;
+long double lerFloat(){
+long double valor;
 while(!(cin >> valor)){
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
