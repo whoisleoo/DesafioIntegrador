@@ -252,6 +252,36 @@ void realizarVenda(){
     cout << "📦 Quantidade: " << quantidadeProduto << "\n";
     cout << "💰 Valor total: \033[1;32mR$" << valorTotal << "\033[0m\n\n";
 
+    cout << "DESEJA ADICIONAR ALGUM DESCONTO?" << endl;
+    cout << " [1] SIM\n";
+    cout << " [2] NÃO\n";
+    cout << "\033[1;32m👉 Digite a opção desejada: \033[0m";
+
+    int opcaoDesconto;
+    opcaoDesconto = lerInteiro();
+    switch ((opcaoDesconto))
+    {
+    case 1 :
+        long double desconto;
+        cout << "💸 Digite o valor do desconto: R$";
+        desconto = lerFloat();
+        if(desconto < 0 || desconto > valorTotal){
+            cout << "\033[1;31m❌ Desconto inválido!\033[0m\n";
+            cout << "O desconto deve ser maior ou igual a zero e menor ou igual ao valor total.\n";
+        } else {
+            valorTotal -= desconto;
+            cout << "💰 Valor total com desconto: R$" << fixed << setprecision(2) << valorTotal << "\n";
+        }
+        break;
+
+    case 2:
+        cout << "\033[1;33m⚠️ Nenhum desconto aplicado.\033[0m\n";
+        break;
+    
+    default:
+        break;
+    }
+
     cout << "💵 Digite o valor pago pelo cliente: R$";
     valorPago = lerFloat();
     clearScreen();
@@ -429,6 +459,34 @@ cout << "\033[0m\n";
 if(totalCarrinho > 0){
 cout << "🧮 Total da compra: \033[1;32mR$" << fixed << setprecision(2) << totalCarrinho << "\033[0m\n";
 long double valorPago;
+cout << "DESEJA ADICIONAR ALGUM DESCONTO?" << endl;
+    cout << " [1] SIM\n";
+    cout << " [2] NÃO\n";
+    cout << "\033[1;32m👉 Digite a opção desejada: \033[0m";
+int opcaoDesconto;
+    opcaoDesconto = lerInteiro();
+    switch ((opcaoDesconto))
+    {
+    case 1 :
+        long double desconto;
+        cout << "💸 Digite o valor do desconto: R$";
+        desconto = lerFloat();
+        if(desconto < 0 || desconto > totalCarrinho){
+            cout << "\033[1;31m❌ Desconto inválido!\033[0m\n";
+            cout << "O desconto deve ser maior ou igual a zero e menor ou igual ao valor total.\n";
+        } else {
+            totalCarrinho -= desconto;
+            cout << "💰 Valor total com desconto: R$" << fixed << setprecision(2) << totalCarrinho << "\n";
+        }
+        break;
+
+    case 2:
+        cout << "\033[1;33m⚠️ Nenhum desconto aplicado.\033[0m\n";
+        break;
+    
+    default:
+        break;
+    }
 cout << "💵 Valor pago pelo cliente: R$";
 valorPago = lerFloat();
 loading();
