@@ -26,6 +26,7 @@ struct Extrato
     int quantidade;
     long double valorPago;
     string data;
+    long double troco;
 
 };
 
@@ -245,7 +246,7 @@ void realizarVenda(){
 
     clearScreen();
     long double valorTotal = produtos[num].price * quantidadeProduto;
-
+   
     cout << "\033[1;34m🔍 RESUMO DA VENDA:\033[0m\n";
     cout << "🛍️ Produto: " << produtos[num].product << "\n";
     cout << "📦 Quantidade: " << quantidadeProduto << "\n";
@@ -257,7 +258,9 @@ void realizarVenda(){
     loading();
 
         if(valorPago >= valorTotal){
+            vector<long double> trocos;
             long double troco = valorPago - valorTotal;
+            trocos.push_back(troco) ;
             cout << "\033[1;32m✅ Pagamento realizado com sucesso!\033[0m\n\n";
             cout << "💰 Valor do produto: R$" << valorTotal << "\n";
             cout << "💵 Valor pago: R$" << valorPago << "\n";
@@ -268,6 +271,7 @@ void realizarVenda(){
                 novaVenda.quantidade = quantidadeProduto;
                 novaVenda.valorPago = produtos[num].price * quantidadeProduto;
                 novaVenda.data = getTime();
+                novaVenda.troco = troco ;
                 vendas.push_back(novaVenda);
         
             salvarExtrato();
@@ -409,6 +413,7 @@ clearScreen();
 void finalizarCompra(){
 clearScreen();
 long double totalCarrinho = 0.0;
+long double totalTroco = 0.0;
 
 for(auto& item : carrinho){
     totalCarrinho += produtos[item.indiceProduto].price * item.quantProduto;
@@ -442,6 +447,7 @@ if(valorPago < totalCarrinho){
         novaVenda.produto = produtos[item.indiceProduto].product;
         novaVenda.quantidade = item.quantProduto;
         novaVenda.valorPago = produtos[item.indiceProduto].price * item.quantProduto;
+        novaVenda.troco = troco;
         novaVenda.data = getTime();
         vendas.push_back(novaVenda);
     }
@@ -544,6 +550,7 @@ void removerProduto(){
 void verificarExtrato(){
     clearScreen();
     long double totalArrecadado = 0.0;
+    long double trocoTotal = 0.0;
     if(vendas.size() > 0){
         cout << "\033[1;36m";
         cout << "╔════════════════════════════════════════════╗\n";
@@ -558,9 +565,13 @@ void verificarExtrato(){
         cout << "📦 Produto: \033[1;37m" << vendas[i].produto << "\033[0m\n";
         cout << "🔢 Quantidade: \033[1;32m" << vendas[i].quantidade << "\033[0m\n";
         cout << "💰 Valor pago: \033[1;32mR$" << vendas[i].valorPago << "\033[0m\n";
+        cout << "💸Troco realizado: \033[1;32mR$" << vendas[i].troco << "\033[0m\n" ;
         cout << "📅​ Data da venda: \033[1;37m" << vendas[i].data << "\033[0m\n";
+        
 
         totalArrecadado += vendas[i].valorPago;
+        trocoTotal += vendas[i].troco;
+
     } 
     cout << "══════════════════════════════════════════════\n";
     cout << "💵 \033[1;32mTOTAL NO CAIXA: R$" << fixed << setprecision(2) << totalArrecadado << "\033[0m\n";
@@ -599,8 +610,12 @@ void esvaziarCarrinho(){
 void saidaCaixa(){
     clearScreen();
     long double totalArrecadado = 0.0;
+    long double trocoTotal = 0.0;
+    long double saidaCaixa = 0.0;
     for(int i = 0; i < vendas.size(); i++){
         totalArrecadado += vendas[i].valorPago;
+        trocoTotal += vendas[i].troco;
+        saidaCaixa += vendas[i].valorPago - vendas[i].troco;
     }
 
       cout << "\033[1;36m";
@@ -611,8 +626,10 @@ void saidaCaixa(){
 
 
     cout << "🔢 TOTAL PRODUTOS VENDIDOS: \033[1;32m" << vendas.size() << "\033[0m\n";
-    cout << "💰 TOTAL ARRECADADO: \033[1;32mR$" << totalArrecadado << "\033[0m\n";
-    cout << "📦 SAIDA DO CAIXA: NÃO FOI ADICIONADO AINDA \n";
+    cout << "💰 SALDO BRUTO: \033[1;32mR$" << totalArrecadado << "\033[0m\n";
+    cout << "📦 SALDO LIMPO: \033[1;32mR$" << fixed << setprecision(2) << saidaCaixa << "\033[0m\n";
+    cout << "💸 TROCO TOTAL: \033[1;32mR$" << fixed << setprecision(2) << trocoTotal << "\033[0m\n";
+    
 
     pausar();
 }
