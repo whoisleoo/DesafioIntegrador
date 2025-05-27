@@ -15,9 +15,7 @@
 * [✅] Saldo do caixa. (aumentando a cada compra).
 * [✅] Embelezar o programa.
 * [✅] Data da venda no extrato.
+* [✅] Troco.
+* [✅] Opção de desconto.
 
-**Coisas pra adicionar:**
-* [] Opção para colocar desconto em produtos.
-
-
-* last updated 20/05/25 19:24
+* last updated 27/05/25 14:55
