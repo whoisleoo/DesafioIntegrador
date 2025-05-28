@@ -255,20 +255,51 @@ void realizarVenda(){
 
 
     int opcaoDesconto;
+    int tipoDesconto;
+    long double valorDesconto;
     opcaoDesconto = lerInteiro();
     switch ((opcaoDesconto))
     {
     case 1 :
-        long double desconto;
-        cout << "💸 Digite o valor do desconto: R$";
-        desconto = lerFloat();
-        if(desconto < 0 || desconto > valorTotal){
-            cout << "\033[1;31m❌ Desconto inválido!\033[0m\n";
-            cout << "\033[1;31m O desconto deve ser maior ou igual a zero e menor ou igual ao valor total.\033[0m\n";
-        } else {
-            valorTotal -= desconto;
-            cout << "\033[1;32m 💰 Valor total com desconto: R$ \033[0m" << fixed << setprecision(2) << valorTotal << "\n";
+    cout << "\033[1;34m🔍 Escolha o tipo de desconto:\033[0m\n";
+        cout << "\033[1;36m [1] 💸 Desconto em valor.\033[0m\n";
+        cout << "\033[1;31m [2] 💹 Desconto em percental.\033[0m\n";
+        cout << "\033[1;32m👉 Digite a opção desejada: \033[0m";
+        tipoDesconto = lerInteiro();
+        switch (tipoDesconto)
+        {
+        case 1: 
+            cout << "💸 Digite o valor do desconto: R$" ;
+            valorDesconto = lerFloat();
+            if(valorDesconto < 0 || valorDesconto > valorTotal){
+                cout << "\033[1;31m❌ Desconto inválido!\033[0m\n";
+                cout <<  "\033[1;31m O desconto deve ser maior ou igual a zero e menor ou igual ao valor total.\033[0m\n";
+            } else {
+                valorTotal -= valorDesconto;
+                cout << "💰 Valor total com desconto: R$" << fixed << setprecision(2) << valorTotal << "\n";
+            } 
+            break;
+        case 2: 
+           cout << "💸 Digite o em percentual do desconto(ex: 10% == 10): ";
+            valorDesconto = lerFloat();
+            if(valorDesconto < 0 || valorDesconto > 100){
+                cout << "\033[1;31m❌ Desconto inválido!\033[0m\n";
+                cout <<  "\033[1;31m O desconto deve ser maior ou igual a zero e menor ou igual a 100%.\033[0m\n";
+            } else {
+                long double desconto = (valorTotal * valorDesconto) / 100;
+                valorTotal -= desconto;
+                cout << "💰 Valor total com desconto: R$" << fixed << setprecision(2) << valorTotal << "\n";
+            }
+            break;
+        
+        default:
+            cout << "\n\033[1;31m[⚠️ Opção inválida. Retornando ao menu.]\033[0m\n";
+            pausar();
+            clearScreen();
+            return;
+            break;
         }
+        
         break;
 
     case 2:
@@ -460,25 +491,56 @@ cout << "\033[1;34m Deseja aplicar desconto?\033[0m" << endl;
     cout << "\033[1;36m [1] ✅ Sim.\033[0m\n";
     cout << "\033[1;31m [2] ❌ Não.\033[0m\n\n";
     cout << "\033[1;32m👉 Digite a opção desejada: \033[0m";
-int opcaoDesconto;
+    int opcaoDesconto;
+    int tipoDesconto;
+    long double valorDesconto;
     opcaoDesconto = lerInteiro();
     switch ((opcaoDesconto))
     {
     case 1 :
-        long double desconto;
-        cout << "💸 Digite o valor do desconto: R$";
-        desconto = lerFloat();
-        if(desconto < 0 || desconto > totalCarrinho){
-            cout << "\033[1;31m❌ Desconto inválido!\033[0m\n";
-            cout <<  "\033[1;31m O desconto deve ser maior ou igual a zero e menor ou igual ao valor total.\033[0m\n";
-        } else {
-            totalCarrinho -= desconto;
-            cout << "💰 Valor total com desconto: R$" << fixed << setprecision(2) << totalCarrinho << "\n";
+    cout << "\033[1;34m🔍 Escolha o tipo de desconto:\033[0m\n";
+        cout << "\033[1;36m [1] 💸 Desconto em valor.\033[0m\n";
+        cout << "\033[1;31m [2] 💹 Desconto em percental.\033[0m\n";
+        cout << "\033[1;32m👉 Digite a opção desejada: \033[0m";
+        tipoDesconto = lerInteiro();
+        switch (tipoDesconto)
+        {
+        case 1: 
+            cout << "💸 Digite o valor do desconto: R$" ;
+            valorDesconto = lerFloat();
+            if(valorDesconto < 0 || valorDesconto > totalCarrinho){
+                cout << "\033[1;31m❌ Desconto inválido!\033[0m\n";
+                cout <<  "\033[1;31m O desconto deve ser maior ou igual a zero e menor ou igual ao valor total.\033[0m\n";
+            } else {
+                totalCarrinho -= valorDesconto;
+                cout << "💰 Valor total com desconto: R$" << fixed << setprecision(2) << totalCarrinho << "\n";
+            } 
+            break;
+        case 2: 
+           cout << "💸 Digite o em percentual do desconto(ex: 10% == 10): ";
+            valorDesconto = lerFloat();
+            if(valorDesconto < 0 || valorDesconto > 100){
+                cout << "\033[1;31m❌ Desconto inválido!\033[0m\n";
+                cout <<  "\033[1;31m O desconto deve ser maior ou igual a zero e menor ou igual a 100%.\033[0m\n";
+            } else {
+                long double desconto = (totalCarrinho * valorDesconto) / 100;
+                totalCarrinho -= desconto;
+                cout << "💰 Valor total com desconto: R$" << fixed << setprecision(2) << totalCarrinho << "\n";
+            }
+            break;
+        
+        default:
+            cout << "\n\033[1;31m[⚠️ Opção inválida. Retornando ao menu.]\033[0m\n";
+            pausar();
+            clearScreen();
+            return;
+            break;
         }
+        
         break;
 
     case 2:
-        cout << "\033[1;33m⚠️ Nenhum desconto aplicado.\033[0m\n";
+        cout << "\033[1;33m⚠️  Nenhum desconto aplicado.\033[0m\n";
         break;
     
     default:
