@@ -16,6 +16,6 @@
 * [✅] Embelezar o programa.
 * [✅] Data da venda no extrato.
 * [✅] Troco.
-* [✅] Opção de desconto.
+* [✅] Opção de desconto (percentual e integral).
 
-* last updated 27/05/25 14:55
+* last updated 28/05/25 22:12
