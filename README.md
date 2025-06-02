@@ -3,22 +3,22 @@
 // interativo, permitindo ao operador escolher entre diferentes funções.
 # REQUISITOS INICIAIS DO PROJETO: 
 
-1. Abertura do caixa
+1. Abertura do caixa >
 // Inserir um valor inicial (fundo de caixa).
 // O sistema deve exibir o valor atual e calcular o troco disponível.
 
-2. Registro de vendas
+2. Registro de vendas >
 // Cadastro de produtos vendidos (com valor e quantidade).
 // Atualização do valor total em caixa.
 
-3.  Emissão de comprovantes
+3.  Emissão de comprovantes >
 //  Geração de um comprovante simples com as informações da venda.
 
-4.  Fechamento do caixa
-//Relatório com:
-// Total de entradas (vendas)
-// Saídas (trocos)
-// Saldo final
+4.  Fechamento do caixa >
+Relatório com:
+Total de entradas (vendas)
+Saídas (trocos)
+Saldo final
 
 **Funções do sistema final de caixa de super-mercado**
 * [✅] Registrar produto.
