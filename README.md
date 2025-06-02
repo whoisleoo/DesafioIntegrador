@@ -1,6 +1,5 @@
 # DESAFIO INTEGRADOR:
-// O sistema será operado por um caixa de supermercado e deverá oferecer um menu
-// interativo, permitindo ao operador escolher entre diferentes funções.
+// O sistema será operado por um caixa de supermercado e deverá oferecer um menu interativo, permitindo ao operador escolher entre diferentes funções.
 # REQUISITOS INICIAIS DO PROJETO: 
 
 1. Abertura do caixa >
