@@ -6,7 +6,7 @@
 using namespace std; 
 
 int main() {
-    SetConsoleOutputCP(65001);
+    SetConsoleOutputCP(CP_UTF8);
     int opcMenu;
     
     float valProduto = 0;
