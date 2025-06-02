@@ -1,5 +1,6 @@
 // ADENDO: ESSA É A VERSÃO PRIMITIVA DO PROJETO COM APENAS OS RECURSOS BÁSICOS EXIGIDOS, A VERSÃO COMPLETA ESTA NO REPOSITORIO.
 
+
 #include <iostream>
 #include <windows.h>
 using namespace std; 
@@ -12,7 +13,11 @@ int main() {
     int valorTotal = 0;
     int vendas = 0;
     int trocoTotal = 0;
-    
+
+    int ultimaQtd = 0;
+    int ultimaVenda = 0;
+    int ultimoTroco = 0;
+    float ultimoValorPago = 0;
 
     cout << "Bom dia! Inicie o valor do fundo de caixa: ";
     float fundoInit;
@@ -41,27 +46,33 @@ do {
     switch (opcMenu)
     {
     case 1: {
-
-            cout << "Digite a quantidade do produto: ";
+            
+            
             int qtdProduto = 0;
             int numProduto = 0;
-            cin >> qtdProduto;
+            char continuar;
             
-            if (qtdProduto <= 0) {
-                cout << "❌ Quantidade inválida! Deve ser maior que zero." << endl;
-            } else {
-                cout << "Digite o valor do produto: ";
-                cin >> valProduto;
-                if (valProduto < 0) {
-                    cout << "❌ Valor inválido! Deve ser maior que zero." << endl;
-                } else {
+            do {
 
-                    int valCentavos = valProduto * 100;
-                    numProduto = valCentavos * qtdProduto;
-                    
+            cout << "Digite a quantidade do produto: ";
+            cin >> qtdProduto;
+            if (qtdProduto <= 0) {cout << "❌ Quantidade inválida! Deve ser maior que zero." << endl; continue;}
+            
+            cout << "Digite o valor do produto: ";
+            cin >> valProduto; 
+            if (valProduto < 0) {cout << "❌ Valor inválido! Deve ser maior que zero." << endl; continue;}
+
+            int subTotal = qtdProduto * (valProduto * 100);
+            numProduto += subTotal;
+            cout << "Subtotal: R$" << numProduto / 100.0 << endl;
+            cout << "Deseja continuar? (s/n): ";
+            cin >> continuar;
+        } 
+            
+            while (continuar == 's' || continuar == 'S');
+
                     cout << "Produto registrado com sucesso!" << endl;
-                    cout << "Valor do produto: R$" << numProduto / 100.0 << endl;
-
+                    cout << "Valor total da venda: R$" << numProduto / 100.0 << endl;
                     cout << "\n";
                     cout << "Digite o valor pago pelo cliente: ";
                     float valorPago;
@@ -74,25 +85,32 @@ do {
                     } else {
                         int troco = tempPago - numProduto;
                         cout << "Troco: R$" << troco / 100.0 << endl;
+
                         valorTotal += numProduto;
                         fundoCaixa += numProduto; 
                         fundoCaixa -= troco;
                         trocoTotal += troco;
                         vendas++;
+
+                        ultimaQtd = qtdProduto;
+                        ultimaVenda = numProduto;
+                        ultimoTroco = troco;
+                        ultimoValorPago = tempPago;
+
                     } 
-                  }
-                } 
+                  
+                
         cout << "Valor total da venda: R$" << numProduto / 100.0 << endl << endl;   
         break; 
     }
 
     case 2: {
         if (valorTotal > 0) {
-            cout << "Total de vendas: " << vendas << endl;
-            cout << "Fundo de caixa atual: R$" << fundoCaixa / 100.0 << endl;
-            cout << "Valor de entradas totais: R$" << valorTotal / 100.0 << endl;
-            cout << "O valor de troco gasto até o momento é: R$" << trocoTotal / 100.0 << endl;
-            cout << "Comprovante emitido com sucesso!" << endl << endl;
+            cout << "Comprovante da ultima venda:\n";
+            cout << "Quantidade de itens: " << ultimaQtd << endl;
+            cout << "Total da venda: R$" << ultimaVenda / 100.0 << endl;
+            cout << "Valor pago: R$" << ultimoValorPago / 100.0 << endl;
+            cout << "Troco: R$" << ultimoTroco / 100.0 << endl;
         } else {
             cout << "Nenhuma venda registrada." << endl;
         }
