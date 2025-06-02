@@ -1,3 +1,5 @@
+// ADENDO: ESSA É A VERSÃO PRIMITIVA DO PROJETO COM APENAS OS RECURSOS BÁSICOS EXIGIDOS, A VERSÃO COMPLETA ESTA NO REPOSITORIO.
+
 #include <iostream>
 #include <windows.h>
 using namespace std; 
