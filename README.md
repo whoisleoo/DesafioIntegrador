@@ -15,7 +15,7 @@
 * Geração de um comprovante simples com as informações da venda.
 
 4.  Fechamento do caixa >
-Relatório com:
+* Relatório com:
 * Total de entradas (vendas)
 * Saídas (trocos)
 * Saldo final
