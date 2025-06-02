@@ -38,4 +38,4 @@
 * [✅] Troco.
 * [✅] Opção de desconto (percentual e integral).
 
-* last updated 02/06/25 02:29
+* last updated 02/06/25 02:32
